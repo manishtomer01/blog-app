@@ -6,9 +6,12 @@ import { getPost } from "@/lib/data";
 
 // FETCH DATA WITH AN API
 const getData = async (slug) => {
-  const res = await fetch(`http://localhost:3000/api/blog/${slug}`, {
-    cache: "no-store",
-  });
+  const res = await fetch(
+    `https://blog-app-silk-tau.vercel.app/api/blog/${slug}`,
+    {
+      cache: "no-store",
+    }
+  );
 
   if (!res.ok) {
     throw new Error("Something went wrong");
