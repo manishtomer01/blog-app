@@ -11,7 +11,7 @@ export const addPost = async (prevState, formData) => {
   // const desc = formData.get("desc");
   // const slug = formData.get("slug");
 
-  const { title, desc, slug, userId } = Object.fromEntries(formData);
+  const { title, desc, slug, userId, img } = Object.fromEntries(formData);
 
   try {
     connectToDb();
@@ -20,6 +20,7 @@ export const addPost = async (prevState, formData) => {
       desc,
       slug,
       userId,
+      img,
     });
 
     await newPost.save();
@@ -32,21 +33,30 @@ export const addPost = async (prevState, formData) => {
   }
 };
 
-export const deletePost = async (formData) => {
-  const { id } = Object.fromEntries(formData);
-
+export const deletePost = async (id) => {
   try {
     connectToDb();
-
     await Post.findByIdAndDelete(id);
     console.log("deleted from db");
     revalidatePath("/blog");
     revalidatePath("/admin");
   } catch (err) {
-    // console.log(err);
     return { error: "Something went wrong!" };
   }
 };
+
+// export const deletePost = async (formData) => {
+//   const { id } = Object.fromEntries(formData);
+//   try {
+//     connectToDb();
+//     await Post.findByIdAndDelete(id);
+//     console.log("deleted from db");
+//     revalidatePath("/blog");
+//     revalidatePath("/admin");
+//   } catch (err) {
+//     return { error: "Something went wrong!" };
+//   }
+// };
 
 export const addUser = async (prevState, formData) => {
   const { username, email, password, img, isAdmin } =
