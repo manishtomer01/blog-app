@@ -1,44 +1,57 @@
 import PostCard from "@/components/postCard/postCard";
+import React, { useState, useEffect } from "react";
 import styles from "./blog.module.css";
 
-const BlogPage = ({ posts }) => {
+// FETCH DATA WITH AN API
+const getData = async () => {
+  const res = await fetch("https://blog-app-silk-tau.vercel.app/api/blog", {
+    // const res = await fetch("http://localhost:3000/api/blog", {
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error("Something went wrong");
+  }
+  return res.json();
+};
+
+const BlogPage = async () => {
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch(
+          "https://blog-app-silk-tau.vercel.app/api/blog",
+          {
+            cache: "no-store",
+          }
+        );
+
+        if (!res.ok) {
+          throw new Error("Something went wrong");
+        }
+
+        const posts = await res.json();
+        setPosts(posts);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <div className={styles.container}>
-      {posts.map((post) => (
-        <div className={styles.post} key={post.id}>
+      {posts.map((post, index) => (
+        <div className={styles.post} key={index}>
           <PostCard post={post} />
         </div>
       ))}
     </div>
   );
 };
-
-export async function getServerSideProps() {
-  // FETCH DATA FROM AN API OR DATABASE
-  try {
-    const res = await fetch("https://blog-app-silk-tau.vercel.app/api/blog", {
-      cache: "no-store",
-    });
-
-    if (!res.ok) {
-      throw new Error("Something went wrong");
-    }
-
-    const posts = await res.json();
-
-    return {
-      props: {
-        posts,
-      },
-    };
-  } catch (error) {
-    console.error("Error fetching data:", error.message);
-    return {
-      props: {
-        posts: [],
-      },
-    };
-  }
-}
 
 export default BlogPage;
