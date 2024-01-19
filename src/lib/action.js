@@ -45,6 +45,17 @@ export const deletePost = async (id) => {
   }
 };
 
+export const getPosts = async () => {
+  try {
+    connectToDb();
+    const posts = await Post.find();
+    revalidatePath("/blog");
+    return posts;
+  } catch (err) {
+    return { error: "Something went wrong!" };
+  }
+};
+
 // export const deletePost = async (formData) => {
 //   const { id } = Object.fromEntries(formData);
 //   try {
