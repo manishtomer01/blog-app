@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import PostCard from "@/components/postCard/postCard";
 import React, { useState, useEffect } from "react";
 import styles from "./blog.module.css";
@@ -15,7 +15,7 @@ const getData = async () => {
   return res.json();
 };
 
-const BlogPage = async () => {
+const BlogPage = () => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,6 +26,9 @@ const BlogPage = async () => {
           "https://blog-app-silk-tau.vercel.app/api/blog",
           {
             cache: "no-store",
+            next: {
+              revalidate: 1,
+            },
           }
         );
 
